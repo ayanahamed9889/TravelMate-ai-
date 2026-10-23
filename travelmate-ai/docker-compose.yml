@@ -1,0 +1,53 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: travelmate_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: travelmate
+      POSTGRES_PASSWORD: travelmate123
+      POSTGRES_DB: travelmate
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U travelmate"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    container_name: travelmate_backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://travelmate:travelmate123@postgres:5432/travelmate
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-dev-only-change-me}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      LLM_PROVIDER: ${LLM_PROVIDER:-mock}
+      FORCE_DEMO_MODE: ${FORCE_DEMO_MODE:-true}
+      GEOAPIFY_API_KEY: ${GEOAPIFY_API_KEY:-}
+      CORS_ORIGINS: http://localhost:5173,http://127.0.0.1:5173
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build: ./frontend
+    container_name: travelmate_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      VITE_API_URL: http://localhost:8000/api
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+volumes:
+  pgdata:

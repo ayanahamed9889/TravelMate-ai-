@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: #faf8ff;
+    color: #131b2e;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible { @apply outline-none ring-2 ring-secondary/60 ring-offset-2 ring-offset-white; }
+}
+
+@layer components {
+  .glass-panel { @apply bg-white/90 backdrop-blur-md border border-slate-100 shadow-glass rounded-2xl; }
+
+  .btn-primary { @apply inline-flex items-center justify-center gap-2 bg-gradient-to-br from-secondary to-orange-600 text-white font-semibold rounded-xl px-4 py-2.5 text-sm transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed; }
+  .btn-primary:hover:not(:disabled) { @apply -translate-y-[1px] shadow-glow; }
+  .btn-secondary { @apply inline-flex items-center justify-center gap-2 bg-primary/5 text-primary border border-primary/10 font-semibold rounded-xl px-4 py-2.5 text-sm transition-all duration-200 hover:bg-primary/10 disabled:opacity-50 disabled:cursor-not-allowed; }
+  .btn-dark { @apply inline-flex items-center justify-center gap-2 bg-primary text-white font-semibold rounded-xl px-4 py-2.5 text-sm transition-all duration-200 hover:bg-indigo-900 disabled:opacity-50 disabled:cursor-not-allowed; }
+
+  .chip { @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors cursor-pointer; }
+  .chip-light { @apply bg-white border border-slate-200 text-slate-600 hover:bg-slate-50; }
+  .chip-active { @apply bg-primary text-white border border-primary; }
+
+  /* shared text input / select style */
+  .field { @apply w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-secondary focus:ring-2 focus:ring-secondary/10 transition-all; }
+  .label { @apply block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider; }
+  .page { @apply p-4 sm:p-6 lg:p-8 max-w-[1400px] mx-auto; }
+}
