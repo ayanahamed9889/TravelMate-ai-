@@ -32,7 +32,14 @@ async def lifespan(_app: FastAPI):
     yield
 
 
-app = FastAPI(title="TravelMate AI API", version="1.1.0", lifespan=lifespan)
+app = FastAPI(
+    title="TravelMate AI API",
+    version="1.1.0",
+    lifespan=lifespan,
+    docs_url="/api/docs",
+    redoc_url="/api/redoc",
+    openapi_url="/api/openapi.json",
+)
 
 app.add_middleware(
     CORSMiddleware,
