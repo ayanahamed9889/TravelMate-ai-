@@ -17,6 +17,7 @@ logging.basicConfig(
 )
 log = logging.getLogger("travelmate")
 
+# create_all is additive: it creates missing tables without deleting or altering existing data.
 Base.metadata.create_all(bind=engine)
 
 
@@ -69,9 +70,12 @@ def health_ai():
 
 @app.get("/api/health")
 def health():
+    from app.database import IS_POSTGRES, IS_SQLITE
+
     return {
         "status": "ok",
         "currency": "INR",
+        "database": "postgresql" if IS_POSTGRES else "sqlite" if IS_SQLITE else "other",
         "demo_mode": settings.demo_mode,          # AI itinerary + chat
         "gemini": bool(settings.gemini_api_key) and not settings.demo_mode,
         "geoapify": bool(settings.geoapify_api_key),   # live hotels

@@ -1,15 +1,19 @@
 from functools import lru_cache
 from pathlib import Path
 
+from pydantic import AliasChoices, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BACKEND_DIR = Path(__file__).resolve().parent.parent
 
 
 class Settings(BaseSettings):
-    # Database (relative sqlite paths are resolved against the backend folder,
-    # so the app finds the same DB no matter where uvicorn is started from)
-    database_url: str = "sqlite:///./travelmate.db"
+    # Database: process environment takes precedence over backend/.env.
+    # PostgreSQL providers may expose POSTGRES_URL; DATABASE_URL is canonical.
+    database_url: str = Field(
+        default="sqlite:///./travelmate.db",
+        validation_alias=AliasChoices("DATABASE_URL", "POSTGRES_URL", "POSTGRES_PRISMA_URL"),
+    )
 
     # Auth
     jwt_secret_key: str = "change-me"
